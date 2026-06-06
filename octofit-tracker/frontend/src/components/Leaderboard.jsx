@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api';
 
 export default function Leaderboard() {
   const [entries, setEntries] = useState([]);
@@ -7,9 +6,17 @@ export default function Leaderboard() {
 
   useEffect(() => {
     let isMounted = true;
+    const apiUrl = import.meta.env.VITE_CODESPACE_NAME
+      ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/leaderboard/`
+      : 'http://localhost:8000/api/leaderboard/';
 
-    fetchCollection('leaderboard')
-      .then((items) => {
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error('Unable to load leaderboard');
+        return response.json();
+      })
+      .then((payload) => {
+        const items = Array.isArray(payload) ? payload : payload.items || payload.results || payload.data || [];
         if (isMounted) setEntries(items);
       })
       .catch((err) => {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api';
 
 export default function Workouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -7,9 +6,17 @@ export default function Workouts() {
 
   useEffect(() => {
     let isMounted = true;
+    const apiUrl = import.meta.env.VITE_CODESPACE_NAME
+      ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/workouts/`
+      : 'http://localhost:8000/api/workouts/';
 
-    fetchCollection('workouts')
-      .then((items) => {
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error('Unable to load workouts');
+        return response.json();
+      })
+      .then((payload) => {
+        const items = Array.isArray(payload) ? payload : payload.items || payload.results || payload.data || [];
         if (isMounted) setWorkouts(items);
       })
       .catch((err) => {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api';
 
 export default function Teams() {
   const [teams, setTeams] = useState([]);
@@ -7,9 +6,17 @@ export default function Teams() {
 
   useEffect(() => {
     let isMounted = true;
+    const apiUrl = import.meta.env.VITE_CODESPACE_NAME
+      ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/teams/`
+      : 'http://localhost:8000/api/teams/';
 
-    fetchCollection('teams')
-      .then((items) => {
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error('Unable to load teams');
+        return response.json();
+      })
+      .then((payload) => {
+        const items = Array.isArray(payload) ? payload : payload.items || payload.results || payload.data || [];
         if (isMounted) setTeams(items);
       })
       .catch((err) => {
