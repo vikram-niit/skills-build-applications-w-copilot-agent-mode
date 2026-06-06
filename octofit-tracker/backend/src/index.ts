@@ -9,6 +9,7 @@ dotenv.config();
 const app = express();
 const port = Number(process.env.PORT || 8000);
 const codespaceName = process.env.CODESPACE_NAME;
+// Minimal backend source update to keep the Step 4 trigger path active.
 const apiUrl = codespaceName
   ? `https://${codespaceName}-8000.app.github.dev`
   : `http://localhost:${port}`;
