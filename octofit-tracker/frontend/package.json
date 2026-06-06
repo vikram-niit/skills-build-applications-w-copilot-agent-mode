@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "description": "OctoFit Tracker frontend application",
+  "description": "OctoFit Tracker frontend app (React 19)",
   "private": true,
   "version": "0.0.0",
   "type": "module",
